@@ -1,0 +1,16 @@
+Package: weatherAlerts
+Type: Package
+Title: Get Active Weather Alerts from the United States National Weather Service
+Version: 0.1
+Imports: RCurl, XML
+Suggests: weatherAlertAreas
+Date: 2016-03-10
+Authors@R: person("Ian", "Cook", , "ianmcook@gmail.com", c("aut", "cre"))
+Description: Retrieve information about current United States National Weather
+  Service (NWS) watches, warnings, and advisories, via the Common Alerting
+  Protocol (CAP) and Atom Syndication Format (ATOM). Alerts are currently
+  limited to the 50 United States and the District of Columbia.
+URL: https://github.com/ianmcook/weatherAlerts
+BugReports: https://github.com/ianmcook/weatherAlerts/issues
+NeedsCompilation: no
+License: MIT + file LICENSE
