@@ -208,42 +208,46 @@ getAlerts <- function(includeStates = NULL, excludeStates = NULL, spatial = TRUE
 
     entriesPolygons <- as.list(rep(NA, nrow(entriesDataFrame)))
 
-    entriesStringPolygons <- apply(
-      X = entriesDataFrame[polygonAreas, ],
-      MARGIN = 1,
-      FUN = function(entryRow) {
-        entryId <- entryRow[["id"]]
-        polygonString <- entryRow[["polygon"]]
-        coords <- t(vapply(
-          X = strsplit(polygonString, " ")[[1]],
-          FUN = function(coord) {
-            as.numeric(rev(strsplit(coord, ",")[[1]]))
-          },
-          FUN.VALUE = numeric(2),
-          USE.NAMES = FALSE
-        ))
-        Polygons(list(Polygon(coords)), ID = entryId)
-      }
-    )
+    if(any(polygonAreas)) {
+      entriesStringPolygons <- apply(
+        X = entriesDataFrame[polygonAreas, ],
+        MARGIN = 1,
+        FUN = function(entryRow) {
+          entryId <- entryRow[["id"]]
+          polygonString <- entryRow[["polygon"]]
+          coords <- t(vapply(
+            X = strsplit(polygonString, " ")[[1]],
+            FUN = function(coord) {
+              as.numeric(rev(strsplit(coord, ",")[[1]]))
+            },
+            FUN.VALUE = numeric(2),
+            USE.NAMES = FALSE
+          ))
+          Polygons(list(Polygon(coords)), ID = entryId)
+        }
+      )
 
-    entriesPolygons[polygonAreas] <- entriesStringPolygons
+      entriesPolygons[polygonAreas] <- entriesStringPolygons
+    }
 
-    entriesUGCPolygons <- apply(
-      X = entriesDataFrame[!polygonAreas, ],
-      MARGIN = 1,
-      FUN = function(entryRow) {
-        entryId <- entryRow[["id"]]
-        entryUGC <- strsplit(entryRow[["UGC"]], " ")[[1]]
-        # UGC codes ending with C000, Z000, CALL, and ZALL all reference whole states
-        entryUGC <- gsub("[CZ](000|ALL)$", "", entryUGC)
-        rgeos::gUnaryUnion(
-          spgeom = weatherAlertAreas::alertAreas[entryUGC],
-          id = rep(entryId, length(entryUGC))
-        )@polygons[[1]]
-      }
-    )
+    if(any(!polygonAreas)) {
+      entriesUGCPolygons <- apply(
+        X = entriesDataFrame[!polygonAreas, ],
+        MARGIN = 1,
+        FUN = function(entryRow) {
+          entryId <- entryRow[["id"]]
+          entryUGC <- strsplit(entryRow[["UGC"]], " ")[[1]]
+          # UGC codes ending with C000, Z000, CALL, and ZALL all reference whole states
+          entryUGC <- gsub("[CZ](000|ALL)$", "", entryUGC)
+          rgeos::gUnaryUnion(
+            spgeom = weatherAlertAreas::alertAreas[entryUGC],
+            id = rep(entryId, length(entryUGC))
+          )@polygons[[1]]
+        }
+      )
 
-    entriesPolygons[!polygonAreas] <- entriesUGCPolygons
+      entriesPolygons[!polygonAreas] <- entriesUGCPolygons
+    }
 
     entriesSpatialPolygons <- SpatialPolygons(
       entriesPolygons,
