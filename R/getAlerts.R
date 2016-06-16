@@ -49,9 +49,9 @@ getAlerts <- function(includeStates = NULL, excludeStates = NULL, spatial = TRUE
   }
 
   if(length(states) == 1) {
-    nwsUrl <- paste0("http://alerts.weather.gov/cap/", tolower(states), ".php?x=0")
+    nwsUrl <- paste0("https://alerts.weather.gov/cap/", tolower(states), ".php?x=0")
   } else {
-    nwsUrl <- "http://alerts.weather.gov/cap/us.php?x=0"
+    nwsUrl <- "https://alerts.weather.gov/cap/us.php?x=0"
   }
 
   response <- getURL(nwsUrl)
