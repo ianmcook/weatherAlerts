@@ -54,7 +54,7 @@ getAlerts <- function(includeStates = NULL, excludeStates = NULL, spatial = TRUE
     nwsUrl <- "https://alerts.weather.gov/cap/us.php?x=0"
   }
 
-  response <- getURL(nwsUrl)
+  response <- getURL(nwsUrl, useragent = "R package weatherAlerts (https://github.com/ianmcook/weatherAlerts)")
 
   xmlDoc <- xmlParse(response, asText=TRUE)
   xmlList <- xmlToList(xmlDoc)
