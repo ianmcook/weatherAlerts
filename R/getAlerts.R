@@ -239,6 +239,7 @@ getAlerts <- function(includeStates = NULL, excludeStates = NULL, spatial = TRUE
           entryUGC <- strsplit(entryRow[["UGC"]], " ")[[1]]
           # UGC codes ending with C000, Z000, CALL, and ZALL all reference whole states
           entryUGC <- gsub("[CZ](000|ALL)$", "", entryUGC)
+          entryUGC <- unique(entryUGC)
           rgeos::gUnaryUnion(
             spgeom = weatherAlertAreas::alertAreas[entryUGC],
             id = rep(entryId, length(entryUGC))
